@@ -133,6 +133,7 @@ void ATPSCharacter::MoveForward(float Val)
 			return;
 		}
 	}
+
 	else
 	{
 		if (AniState == TPSAniState::ForwardMove || AniState == TPSAniState::BackwardMove)
