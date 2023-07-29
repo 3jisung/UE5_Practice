@@ -28,7 +28,7 @@ void ATPSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Error, TEXT("%d"), AniState);
+	//UE_LOG(LogTemp, Error, TEXT("%d"), AniState);
 }
 
 // Called to bind functionality to input
@@ -191,5 +191,5 @@ void ATPSCharacter::AttackAction()
 
 	// PlayMontage();
 
-	//AniState = TPSAniState::Attack;
+	AniState = TPSAniState::Attack;
 }
