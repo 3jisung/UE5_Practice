@@ -2,6 +2,9 @@
 
 
 #include "TPSCharacter.h"
+#include "../Global/GlobalGameInstance.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ATPSCharacter::ATPSCharacter()
@@ -13,6 +16,13 @@ ATPSCharacter::ATPSCharacter()
 	BaseLookUpRate = 45.f;
 
 	JumpMaxHoldTime = 0.0f;
+
+	// 생성자에서 컴포넌트를 만드는 방법은 다음의 함수를 사용하면 된다.
+
+	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
+
+	// 어떤 다른 부모에게 나를 붙인다는 이야기가 됩니다.
+	WeaponMesh->SetupAttachment(GetMesh(), TEXT("B_R_Weapon"));
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +31,15 @@ void ATPSCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	JumpMaxCount = 2;
+
+	GetWorld()->GetAuthGameMode();
+
+	UGlobalGameInstance* Inst = GetGameInstance<UGlobalGameInstance>();
+
+	WeaponArrays.Add(GetGameInstance<UGlobalGameInstance>()->GetMesh(TEXT("Weapon")));
+	WeaponArrays.Add(GetGameInstance<UGlobalGameInstance>()->GetMesh(TEXT("Cube")));
+
+	WeaponMesh->SetStaticMesh(WeaponArrays[0]);
 }
 
 // Called every frame
