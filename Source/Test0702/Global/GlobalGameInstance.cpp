@@ -4,6 +4,8 @@
 #include "GlobalGameInstance.h"
 #include "Data/GameMeshData.h"
 #include "Data/SubClassData.h"
+#include "Data/MonsterData.h"
+#include "ARGlobal.h"
 
 UGlobalGameInstance::UGlobalGameInstance()
 {
@@ -16,6 +18,18 @@ UGlobalGameInstance::UGlobalGameInstance()
 			MeshDatas = DataTable.Object;
 		}
 	}
+
+	{
+		FString DataPath = TEXT("/Script/Engine.DataTable'/Game/BluePrint/AI/DT_MonsterData.DT_MonsterData'");
+		ConstructorHelpers::FObjectFinder<UDataTable> DataTable(*DataPath);
+
+		if (DataTable.Succeeded())
+		{
+			MonsterDatas = DataTable.Object;
+		}
+	}
+
+	UARGlobal::MainRandom.GenerateNewSeed();
 }
 UGlobalGameInstance::~UGlobalGameInstance()
 {
@@ -37,4 +51,21 @@ UStaticMesh* UGlobalGameInstance::GetMesh(FName _Name)
 	}
 
 	return FindTable->Mesh;
+}
+
+FMonsterData* UGlobalGameInstance::GetMonsterData(FName _Name)
+{
+	if (nullptr == MonsterDatas)
+	{
+		return nullptr;
+	}
+
+	FMonsterData* FindTable = MonsterDatas->FindRow<FMonsterData>(_Name, _Name.ToString());
+
+	if (nullptr == FindTable)
+	{
+		return nullptr;
+	}
+
+	return FindTable;
 }

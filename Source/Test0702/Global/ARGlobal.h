@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -20,7 +20,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ARGlobal")
 	static void ARDebugTextInit();
 
-	//µğ¹ö±× ÅØ½ºÆ®¸¦ À§Á¬À» ÅëÇØ¼­ È­¸é¿¡ »Ñ·ÁÁÖ´Â ÇÔ¼ö.
+	//ë””ë²„ê·¸ í…ìŠ¤íŠ¸ë¥¼ ìœ„ì ¯ì„ í†µí•´ì„œ í™”ë©´ì— ë¿Œë ¤ì£¼ëŠ” í•¨ìˆ˜.
 	UFUNCTION(BlueprintCallable, Category = "ARGlobal", meta = (DefaultToSelf = "_Object"))
 	static void ARDebugTextPrint(class AActor* _Object, const FString& _Text);
 
