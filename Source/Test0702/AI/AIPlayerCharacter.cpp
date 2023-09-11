@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "../Global/GlobalGameInstance.h"
+#include "../Global/ProjectTile.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AAIPlayerCharacter::AAIPlayerCharacter()
@@ -38,7 +39,7 @@ void AAIPlayerCharacter::BeginPlay()
 
 	GetGlobalAnimInstance()->OnMontageBlendingOut.AddDynamic(this, &AAIPlayerCharacter::MontageEnd);
 
-	//GetGlobalAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &AAIPlayerCharacter::AnimNotifyBegin);
+	GetGlobalAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &AAIPlayerCharacter::AnimNotifyBegin);
 
 	SetAniState(AIAniState::Idle);
 
@@ -120,7 +121,16 @@ void AAIPlayerCharacter::AttackAction()
 	// 여기가 아니라 몽타주가 책임져줘야 한다.
 
 	// 이걸 여기에서 하면 안된다.
+	/*
+	UGlobalGameInstance* Inst = GetWorld()->GetGameInstance<UGlobalGameInstance>();
+	TSubclassOf<UObject> Effect = Inst->GetSubClass(TEXT("Effect"));
 
+	if (nullptr != Effect)
+	{
+		AActor* Actor = GetWorld()->SpawnActor<AActor>(Effect);
+		Actor->SetActorLocation(GetActorLocation());
+	}
+	*/
 
 	SetAniState(AIAniState::Attack);
 }
@@ -222,5 +232,46 @@ void AAIPlayerCharacter::MontageEnd(UAnimMontage* Anim, bool _Inter)
 	if (MapAnimation[AIAniState::Jump] == Anim)
 	{
 		SetAniState(AIAniState::Idle);
+	}
+}
+
+void AAIPlayerCharacter::AnimNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	UGlobalGameInstance* Inst = GetWorld()->GetGameInstance<UGlobalGameInstance>();
+
+	TSubclassOf<UObject> Effect = Inst->GetSubClass(TEXT("Effect"));
+	TSubclassOf<UObject> RangeAttack = Inst->GetSubClass(TEXT("PlayerRangeAttack"));
+
+	if (nullptr != Effect)
+	{
+		AActor* Actor = GetWorld()->SpawnActor<AActor>(Effect);
+		Actor->SetActorLocation(GetActorLocation());
+		Actor->SetActorRotation(GetActorRotation());
+		Actor->SetActorScale3D(GetActorScale());
+
+		// delayTime 뒤 이펙트 액터를 삭제하는 코드
+		float delayTime = 1.0;
+		FTimerHandle myTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(myTimerHandle, FTimerDelegate::CreateLambda([&, Actor]()
+			{
+				// 내가 원하는 코드 구현
+				Actor->Destroy();
+
+				// 타이머 초기화
+				GetWorld()->GetTimerManager().ClearTimer(myTimerHandle);
+			}), delayTime, false); // 반복 실행을 하고 싶으면 false 대신 true 대입
+	}
+
+	// 발사체 만들기
+	{
+		AActor* Actor = GetWorld()->SpawnActor<AActor>(RangeAttack);
+		Actor->Tags.Add(TEXT("Damage"));
+		AProjectTile* ProjectTile = Cast<AProjectTile>(Actor);
+		ProjectTile->SetActorLocation(GetActorLocation());
+		ProjectTile->SetActorRotation(GetActorRotation());
+		ProjectTile->GetSphereComponent()->SetCollisionProfileName(TEXT("PlayerAttack"), true);
+		// 외부에서 플레이어가 총알에게 명령을 내리거나 총알이 플레이어의 일을 대신할수 있다.
+		// Ex) 데미지 계산할때 몬스터는 몬스터의 규칙이 있을 것이고
+		//     플레이어의 규칙이 있을텐데 총알입장에서는 나를 발사한게 몬스터인지 플레이어인지는 중요하면 안되다.
 	}
 }

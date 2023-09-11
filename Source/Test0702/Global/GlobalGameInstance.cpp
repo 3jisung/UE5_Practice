@@ -29,6 +29,16 @@ UGlobalGameInstance::UGlobalGameInstance()
 		}
 	}
 
+	{
+		FString DataPath = TEXT("/Script/Engine.DataTable'/Game/BluePrint/Global/Data/DT_SubClassData.DT_SubClassData'");
+		ConstructorHelpers::FObjectFinder<UDataTable> DataTable(*DataPath);
+
+		if (DataTable.Succeeded())
+		{
+			SubClassData = DataTable.Object;
+		}
+	}
+
 	UARGlobal::MainRandom.GenerateNewSeed();
 }
 UGlobalGameInstance::~UGlobalGameInstance()
@@ -68,4 +78,21 @@ FMonsterData* UGlobalGameInstance::GetMonsterData(FName _Name)
 	}
 
 	return FindTable;
+}
+
+TSubclassOf<UObject> UGlobalGameInstance::GetSubClass(FName _Name)
+{
+	if (nullptr == SubClassData)
+	{
+		return nullptr;
+	}
+
+	FSubClassData* FindTable = SubClassData->FindRow<FSubClassData>(_Name, _Name.ToString());
+
+	if (nullptr == FindTable)
+	{
+		return nullptr;
+	}
+
+	return FindTable->Object;
 }
