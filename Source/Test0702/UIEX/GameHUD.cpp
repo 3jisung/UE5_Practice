@@ -27,12 +27,6 @@ void AGameHUD::BeginPlay()
 
 	{
 		UUserWidget* Window = Cast<UUserWidget>(MainWidget->GetWidgetFromName(TEXT("TalkTextWindow")));
-
-
-		// Window->SetVisibility(ESlateVisibility::Hidden);
-		// Window->Visibility = ESlateVisibility::Visible;
-
-
 	}
 
 	{
