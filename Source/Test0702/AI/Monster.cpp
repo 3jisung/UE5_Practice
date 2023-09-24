@@ -5,11 +5,16 @@
 #include "../Global/GlobalGameInstance.h"
 #include "../Global/GlobalCharacter.h"
 #include "../Global/ARGlobal.h"
+#include "../UIEX/MiniMapComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 AMonster::AMonster()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bCanEverTick = true;
+
+	MiniMap = CreateDefaultSubobject<UMiniMapComponent>(TEXT("MiniMapComponent"));
+	MiniMap->SetupAttachment(RootComponent);
+	MiniMap->MiniMapInit(this);
 }
 
 

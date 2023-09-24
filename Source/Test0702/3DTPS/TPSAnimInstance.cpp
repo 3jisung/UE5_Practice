@@ -8,28 +8,28 @@ void UTPSAnimInstance::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
 
-	// ³ªÀÚ½ÅÀÌ ¾Ö´ÔÀÎ½ºÅÏ½ºÀÔ´Ï´Ù.
+	// ë‚˜ìì‹ ì´ ì• ë‹˜ì¸ìŠ¤í„´ìŠ¤ì…ë‹ˆë‹¤.
 	// OnMontageEnded.AddDynamic(this, &UTPSAnimInstance::MontageEnd);
 
-	// ¾ÆÀÌµé       => °ø°İ
-	// ºê·£µå ¾Æ¿ô     ºí·£µåÀÎ
+	// ì•„ì´ë“¤       => ê³µê²©
+	// ë¸Œëœë“œ ì•„ì›ƒ     ë¸”ëœë“œì¸
 
 	OnMontageBlendingOut.AddDynamic(this, &UTPSAnimInstance::MontageEnd);
 
-	// ³ª¸¦ °¡Áø ¾×ÅÍ¸¦ ¿©±â¼­ °¡Á®¿É´Ï´Ù.
-	// TPSÄ³¸¯ÅÍ¿¡°Ô ´Ù ¼¼ÆÃÀ» ÇØÁá´Ù.
+	// ë‚˜ë¥¼ ê°€ì§„ ì•¡í„°ë¥¼ ì—¬ê¸°ì„œ ê°€ì ¸ì˜µë‹ˆë‹¤.
+	// TPSìºë¦­í„°ì—ê²Œ ë‹¤ ì„¸íŒ…ì„ í•´ì¤¬ë‹¤.
 
-	ATPSCharacter* Chracter = Cast<ATPSCharacter>(GetOwningActor());
+	ATPSCharacter* Character = Cast<ATPSCharacter>(GetOwningActor());
 
-	if (nullptr == Chracter && false == Chracter->IsValidLowLevel())
+	if (nullptr == Character && false == Character->IsValidLowLevel())
 	{
 		return;
 	}
 
-	AllAnimations = Chracter->AllAnimations;
+	AllAnimations = Character->AllAnimations;
 }
 
-// ½ÃÀÛÇÒ¶§ ÇÑ¹ø ¾÷µ¥ÀÌÆ®¸¦ µ¹·ÁÁÖ¹Ç·Î.
+// ì‹œì‘í• ë•Œ í•œë²ˆ ì—…ë°ì´íŠ¸ë¥¼ ëŒë ¤ì£¼ë¯€ë¡œ.
 void UTPSAnimInstance::NativeUpdateAnimation(float _DeltaTime)
 {
 	Super::NativeUpdateAnimation(_DeltaTime);
@@ -39,14 +39,14 @@ void UTPSAnimInstance::NativeUpdateAnimation(float _DeltaTime)
 		return;
 	}
 
-	ATPSCharacter* Chracter = Cast<ATPSCharacter>(GetOwningActor());
+	ATPSCharacter* Character = Cast<ATPSCharacter>(GetOwningActor());
 
-	if (nullptr == Chracter && false == Chracter->IsValidLowLevel())
+	if (nullptr == Character && false == Character->IsValidLowLevel())
 	{
 		return;
 	}
 
-	AniState = Chracter->AniState;
+	AniState = Character->AniState;
 
 	class UAnimMontage* Montage = AllAnimations[AniState];
 
@@ -65,25 +65,25 @@ void UTPSAnimInstance::MontageEnd(UAnimMontage* Anim, bool _Inter)
 {
 	TSubclassOf<UAnimInstance> Inst = UTPSAnimInstance::StaticClass();
 
-	ATPSCharacter* Chracter = Cast<ATPSCharacter>(GetOwningActor());
+	ATPSCharacter* Character = Cast<ATPSCharacter>(GetOwningActor());
 
-	if (nullptr == Chracter && false == Chracter->IsValidLowLevel())
+	if (nullptr == Character && false == Character->IsValidLowLevel())
 	{
 		return;
 	}
 
-	// Anim Á¾·áµÈ ¸ùÅ¸ÁÖ
+	// Anim ì¢…ë£Œëœ ëª½íƒ€ì£¼
 	if (AllAnimations[TPSAniState::Attack] == Anim)
 	{
 		AniState = TPSAniState::Idle;
-		Chracter->AniState = AniState;
+		Character->AniState = AniState;
 		Montage_Play(AllAnimations[TPSAniState::Idle], 1.0f);
 	}
 
 	if (AllAnimations[TPSAniState::Jump] == Anim)
 	{
 		AniState = TPSAniState::Idle;
-		Chracter->AniState = AniState;
+		Character->AniState = AniState;
 		Montage_Play(AllAnimations[TPSAniState::Idle], 1.0f);
 	}
 

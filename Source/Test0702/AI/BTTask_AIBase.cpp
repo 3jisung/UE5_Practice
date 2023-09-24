@@ -40,7 +40,7 @@ AGlobalCharacter* UBTTask_AIBase::GetGlobalCharacter(UBehaviorTreeComponent& Own
 	AAICon* AiCon = OwnerComp.GetOwner<AAICon>();
 	if (nullptr == AiCon || false == AiCon->IsValidLowLevel())
 	{
-		UE_LOG(LogTemp, Error, TEXT("%S(%u)> if (nullptr == Chracter || false == Chracter->IsValidLowLevel())"), __FUNCTION__, __LINE__);
+		UE_LOG(LogTemp, Error, TEXT("%S(%u)> if (nullptr == Character || false == Character->IsValidLowLevel())"), __FUNCTION__, __LINE__);
 		// 정상적이지 않은 뭔가가 
 		return nullptr;
 	}
@@ -50,7 +50,7 @@ AGlobalCharacter* UBTTask_AIBase::GetGlobalCharacter(UBehaviorTreeComponent& Own
 
 	if (nullptr == Character || false == Character->IsValidLowLevel())
 	{
-		UE_LOG(LogTemp, Error, TEXT("%S(%u)> if (nullptr == Chracter || false == Chracter->IsValidLowLevel())"), __FUNCTION__, __LINE__);
+		UE_LOG(LogTemp, Error, TEXT("%S(%u)> if (nullptr == Character || false == Character->IsValidLowLevel())"), __FUNCTION__, __LINE__);
 		// 정상적이지 않은 뭔가가 
 		return nullptr;
 	}

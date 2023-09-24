@@ -28,6 +28,8 @@ public:
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 
+	void InventoryOnOff();
+
 	//UFUNCTION(BlueprintCallable)
 	//void AttUp(class UInvenItemData* _Data);
 

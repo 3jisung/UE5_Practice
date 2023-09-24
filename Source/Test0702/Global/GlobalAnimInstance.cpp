@@ -29,6 +29,11 @@ void UGlobalAnimInstance::NativeUpdateAnimation(float _DeltaTime)
 
 	AniState = Character->GetAniState();
 
+	if (AllAnimations.Find(AniState) == nullptr)
+	{
+		return;
+	}
+
 	class UAnimMontage* Montage = AllAnimations[AniState];
 
 	if (nullptr == Montage)

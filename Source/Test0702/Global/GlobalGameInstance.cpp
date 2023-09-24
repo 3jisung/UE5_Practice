@@ -5,7 +5,7 @@
 #include "Data/GameMeshData.h"
 #include "Data/SubClassData.h"
 #include "Data/MonsterData.h"
-#include "ARGlobal.h"
+#include "Data/ItemData.h"
 
 UGlobalGameInstance::UGlobalGameInstance()
 {
@@ -39,11 +39,39 @@ UGlobalGameInstance::UGlobalGameInstance()
 		}
 	}
 
+	{
+		FString DataPath = TEXT("/Script/Engine.DataTable'/Game/BluePrint/Global/Data/DT_ItemData.DT_ItemData'");
+		ConstructorHelpers::FObjectFinder<UDataTable> DataTable(*DataPath);
+
+		if (DataTable.Succeeded())
+		{
+			ItemDatas = DataTable.Object;
+
+			TArray<FName> ArrayName = ItemDatas->GetRowNames();
+
+			for (size_t i = 0; i < ArrayName.Num(); i++)
+			{
+				FItemData* ItemData = ItemDatas->FindRow<FItemData>(ArrayName[i], ArrayName[i].ToString());
+				ItemDataRandoms.Add(ItemData);
+			}
+		}
+	}
+
 	UARGlobal::MainRandom.GenerateNewSeed();
 }
 UGlobalGameInstance::~UGlobalGameInstance()
 {
 
+}
+
+const struct FItemData* UGlobalGameInstance::GetRandomItemData()
+{
+	if (true == ItemDataRandoms.IsEmpty())
+	{
+		return nullptr;
+	}
+
+	return ItemDataRandoms[UARGlobal::MainRandom.RandRange(0, ItemDataRandoms.Num() - 1)];
 }
 
 UStaticMesh* UGlobalGameInstance::GetMesh(FName _Name)

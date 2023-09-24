@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "../Global/GlobalGameInstance.h"
 #include "../Global/ProjectTile.h"
+#include "../UIEX/GameHUD.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AAIPlayerCharacter::AAIPlayerCharacter()
@@ -109,6 +110,7 @@ void AAIPlayerCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 	PlayerInputComponent->BindAction("PlayerAttack", EInputEvent::IE_Pressed, this, &AAIPlayerCharacter::AttackAction);
 	PlayerInputComponent->BindAction("PlayerJumpAction", EInputEvent::IE_Pressed, this, &AAIPlayerCharacter::JumpAction);
+	PlayerInputComponent->BindAction("InventoryWindow", EInputEvent::IE_Pressed, this, &AAIPlayerCharacter::InventoryOnOff);
 	//PlayerInputComponent->BindAction("WeaponChange", EInputEvent::IE_Pressed, this, &AAIPlayerCharacter::WeaponChange);
 
 
@@ -217,6 +219,20 @@ void AAIPlayerCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds() * CustomTimeDilation);
+}
+
+void AAIPlayerCharacter::InventoryOnOff()
+{
+	APlayerController* HUDController = Cast<APlayerController>(GetController());
+
+	AGameHUD* HUD = HUDController->GetHUD<AGameHUD>();
+
+	if (nullptr == HUD && false == HUD->IsValidLowLevel())
+	{
+		return;
+	}
+
+	HUD->GetMainWidget()->SetInventoryOnOffSwitch();
 }
 
 void AAIPlayerCharacter::MontageEnd(UAnimMontage* Anim, bool _Inter)

@@ -32,6 +32,6 @@ private:
 	UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FName DataName = "NONE";
 
-	//UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-	//class UMiniMapComponent* MiniMap;
+	UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	class UMiniMapComponent* MiniMap;
 };
