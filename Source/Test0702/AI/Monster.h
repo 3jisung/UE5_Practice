@@ -24,9 +24,7 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaTime) override;
 
-	// void MonsterDeath();
-
-	//void Destroyed() override;
+	void Destroyed() override;
 
 private:
 	UPROPERTY(Category = "Monster", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))

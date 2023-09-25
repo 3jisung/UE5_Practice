@@ -47,3 +47,35 @@ void AMonster::Tick(float DeltaTime)
 {
 	UARGlobal::ARDebugTextPrint(this, FString::FromInt(GetAniState()));
 }
+
+void AMonster::Destroyed()
+{
+	Super::Destroyed();
+
+	UGlobalGameInstance* Inst = GetWorld()->GetGameInstance<UGlobalGameInstance>();
+
+	if (nullptr == Inst)
+	{
+		return;
+	}
+
+	TSubclassOf<UObject> Item = Inst->GetSubClass(TEXT("Item"));
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		FVector RandomPos;
+
+		RandomPos.X = UARGlobal::MainRandom.FRandRange(-200, 200);
+		RandomPos.Y = UARGlobal::MainRandom.FRandRange(-200, 200);
+
+		// 아이템을 드롭하도록 만들어보자.
+		{
+			// 몬스터 입장에서는 그냥 아이템인지도 알필요가 없고
+			// 그냥 내가 죽을때 어떤 액터를 만들뿐이다.
+			AActor* Actor = GetWorld()->SpawnActor<AActor>(Item);
+			Actor->Tags.Add(TEXT("Item"));
+			Actor->SetActorLocation(GetActorLocation() + RandomPos);
+		}
+	}
+
+}

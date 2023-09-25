@@ -62,3 +62,43 @@ void UInventoryUserWidget::AddInvenItem(UObject* _Data, UUserWidget* _Widget)
 
 	ItemSlotWidget->SetItemData(InvenSlotData);
 }
+
+void UInventoryUserWidget::AddGameItem(const FItemData* Data)
+{
+	// 전체 아이템
+	const TArray<UObject*>& Items = InvenList->GetListItems();
+
+	// 중복가능한 아이템들을 한번다 살펴보고
+
+	// 비어있는 아이템을 검색해야 한다.
+	for (size_t i = 0; i < Items.Num(); i++)
+	{
+		UInvenItemData* DataObject = Cast<UInvenItemData>(Items[i]);
+
+		if (nullptr == DataObject->Data)
+		{
+			// 데이터까지만 세팅해 놓습니다.
+			// 비어있는 인벤이다.
+			DataObject->Data = Data;
+			DataObject->Widget->SlotDataCheck();
+			return;
+		}
+
+		if (DataObject->Data->Type == ItemType::NONE)
+		{
+			DataObject->Data = Data;
+			DataObject->Widget->SlotDataCheck();
+			return;
+		}
+
+		if (DataObject->Data == Data
+			&& DataObject->Count < Data->StackMax)
+		{
+			++DataObject->Count;
+			DataObject->Widget->SlotDataCheck();
+			return;
+		}
+	}
+
+	return;
+}
