@@ -23,7 +23,7 @@ public:
 	void LookUpAtRate(float Rate);
 
 protected:
-	// privateÀÎ º¯¼ö¸¦ ºí·çÇÁ¸°Æ®¿¡¼­ publicÃ³¶÷ »ç¿ëÇÒ¼ö ÀÖ´Â ±¸¹®À» »ç¿ë
+	// privateì¸ ë³€ìˆ˜ë¥¼ ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œ publicì²˜ëŒ ì‚¬ìš©í• ìˆ˜ ìˆëŠ” êµ¬ë¬¸ì„ ì‚¬ìš©
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pawn", meta = (AllowPrivateAccess = "true"))
 	float BaseTurnRate = 45.0f;
 

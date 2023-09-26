@@ -145,7 +145,7 @@ private:
 	bool HitState = true;
 
 	// 피격 무적 시간
-	float HitIgnoreTime = 1;
+	float HitIgnoreTime = 0.5;
 
 	UFUNCTION()
 	void BeginOverLap(

@@ -223,6 +223,7 @@ void AAIPlayerCharacter::LookUpAtRate(float Rate)
 
 void AAIPlayerCharacter::InventoryOnOff()
 {
+	/*
 	APlayerController* HUDController = Cast<APlayerController>(GetController());
 
 	AGameHUD* HUD = HUDController->GetHUD<AGameHUD>();
@@ -233,6 +234,7 @@ void AAIPlayerCharacter::InventoryOnOff()
 	}
 
 	HUD->GetMainWidget()->SetInventoryOnOffSwitch();
+	*/
 }
 
 void AAIPlayerCharacter::MontageEnd(UAnimMontage* Anim, bool _Inter)

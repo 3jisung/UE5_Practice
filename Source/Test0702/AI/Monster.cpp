@@ -45,7 +45,7 @@ void AMonster::BeginPlay()
 
 void AMonster::Tick(float DeltaTime)
 {
-	UARGlobal::ARDebugTextPrint(this, FString::FromInt(GetAniState()));
+	//UARGlobal::ARDebugTextPrint(this, FString::FromInt(GetAniState()));
 }
 
 void AMonster::Destroyed()

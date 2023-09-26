@@ -26,22 +26,22 @@ void ACollisionCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// ¾ð¸®¾ó¿¡¼­ TraceÃæµ¹Àº ¿ùµå¸¦ ÅëÇØ¼­ Á÷Á¢ÇØ¾ßÇÑ´Ù.
+	// ì–¸ë¦¬ì–¼ì—ì„œ Traceì¶©ëŒì€ ì›”ë“œë¥¼ í†µí•´ì„œ ì§ì ‘í•´ì•¼í•œë‹¤.
 
-	// ¾Æ·¡ÀÇ ÇÔ¼öµéÀº Áö±Ý ÀÌ¼ø°£ Ãæµ¹Ã¼¸¦ ¸¸µå´Â ¹æ½ÄÀÌ´Ù.
+	// ì•„ëž˜ì˜ í•¨ìˆ˜ë“¤ì€ ì§€ê¸ˆ ì´ìˆœê°„ ì¶©ëŒì²´ë¥¼ ë§Œë“œëŠ” ë°©ì‹ì´ë‹¤.
 
 	// GetWorld()->LineTraceSingleByProfile
 
-	// ³­ ÀÌÇÔ¼ö¸¦ ¿Ö ¾²·Á°í ÇÏ´Â°¡?
+	// ë‚œ ì´í•¨ìˆ˜ë¥¼ ì™œ ì“°ë ¤ê³  í•˜ëŠ”ê°€?
 
-	// ÀÌ ÇÔ¼ö¸¦ Áö±Ý ¾î¶² ÇÔ¼ö·Î¼­ ÆÄ¾ÇÇÏ°í ÀÖ´Â°¡?
+	// ì´ í•¨ìˆ˜ë¥¼ ì§€ê¸ˆ ì–´ë–¤ í•¨ìˆ˜ë¡œì„œ íŒŒì•…í•˜ê³  ìžˆëŠ”ê°€?
 
 	
-	TArray<FHitResult> OutHits; // °á°ú¸¦ ¹Þ´Â ÀÚ·á±¸Á¶
-	FVector Start = GetActorLocation() - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // ¼±ÀÇ ½ÃÀÛ
-	FVector End = GetActorLocation() + (-GetActorUpVector() * 1000000.0f); // ¼±ÀÇ ³¡
-	FName ProfileName = TEXT("GroundCheck"); // ³ª¶û Ãæµ¹ÇÒ Ãæµ¹ ÇÁ¸®¼Â
-	// Ãæµ¹À» Ã¼Å©ÇØ¼­ ´Ù¸¥ ¿ÀºêÁ§Æ®µéÀ» ÆÄ¾ÇÇÒ ÇÁ¸®¼Â
+	TArray<FHitResult> OutHits; // ê²°ê³¼ë¥¼ ë°›ëŠ” ìžë£Œêµ¬ì¡°
+	FVector Start = GetActorLocation() - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()); // ì„ ì˜ ì‹œìž‘
+	FVector End = GetActorLocation() + (-GetActorUpVector() * 1000000.0f); // ì„ ì˜ ë
+	FName ProfileName = TEXT("GroundCheck"); // ë‚˜ëž‘ ì¶©ëŒí•  ì¶©ëŒ í”„ë¦¬ì…‹
+	// ì¶©ëŒì„ ì²´í¬í•´ì„œ ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ë“¤ì„ íŒŒì•…í•  í”„ë¦¬ì…‹
 
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 
@@ -74,9 +74,9 @@ void ACollisionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	{
 		bBindingsAdded = true;
 
-		// ¿©±âÀÇ ³»¿ëÀº ¹¹³Ä?
-		// DefaultPawn_MoveForward Ãß°¡µÇ´Â°Í »Ó
-		// Ãà¸ÅÇÎ¸¸ ÇÏ°í ÀÖ½º´Ï´Ù.
+		// ì—¬ê¸°ì˜ ë‚´ìš©ì€ ë­ëƒ?
+		// DefaultPawn_MoveForward ì¶”ê°€ë˜ëŠ”ê²ƒ ë¿
+		// ì¶•ë§¤í•‘ë§Œ í•˜ê³  ìžˆìŠ¤ë‹ˆë‹¤.
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("PlayerMoveForward", EKeys::W, 1.f));
 		UPlayerInput::AddEngineDefinedAxisMapping(FInputAxisKeyMapping("PlayerMoveForward", EKeys::S, -1.f));
 
@@ -90,9 +90,9 @@ void ACollisionCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping(TEXT("PlayerJumpAction"), EKeys::SpaceBar));
 	}
 
-	// Å°¿Í ÇÔ¼ö¸¦ ¿¬°áÇÕ´Ï´Ù.
-	// ÀÌ Å°°¡ ´­¸®¸é ÀÌ ÇÔ¼ö¸¦ ½ÇÇà½ÃÄÑÁàÀÎµ¥.
-	// ÃàÀÏ¶§´Â ÀÏ´Ü °è¼Ó ½ÇÇà½ÃÄÑÁà.
+	// í‚¤ì™€ í•¨ìˆ˜ë¥¼ ì—°ê²°í•©ë‹ˆë‹¤.
+	// ì´ í‚¤ê°€ ëˆŒë¦¬ë©´ ì´ í•¨ìˆ˜ë¥¼ ì‹¤í–‰ì‹œì¼œì¤˜ì¸ë°.
+	// ì¶•ì¼ë•ŒëŠ” ì¼ë‹¨ ê³„ì† ì‹¤í–‰ì‹œì¼œì¤˜.
 	PlayerInputComponent->BindAxis("PlayerMoveForward", this, &ACollisionCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("PlayerMoveRight", this, &ACollisionCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("PlayerTurnRate", this, &ACollisionCharacter::TurnAtRate);
@@ -155,27 +155,27 @@ void ACollisionCharacter::BeginOverLap(
 	const FHitResult& SweepResult
 )
 {
-	// ³ª¿Í °ãÄ£ ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÇ±â¸¦ ¿øÇÑ´Ù.
+	// ë‚˜ì™€ ê²¹ì¹œ ì˜¤ë¸Œì íŠ¸ê°€ íŒŒê´´ë˜ê¸°ë¥¼ ì›í•œë‹¤.
 
 	if (OtherActor->ActorHasTag(TEXT("item")))
 	{
 		OtherActor->Destroy();
 	}
 
-	// OverlappedComponent Ãæµ¹ÇÑ ÀÌ ¿¢ÅÍ°¡ °¡Áö°í ÀÖ´Â ÄÄÆ÷³ÍÆ® 
-	// OtherActor Ãæµ¹ÇÑ »ó´ë actor => Item
-	// OtherComp Ãæµ¹ÇÑ »ó´ë ÄÄÆ÷³ÍÆ®
+	// OverlappedComponent ì¶©ëŒí•œ ì´ ì—‘í„°ê°€ ê°€ì§€ê³  ìžˆëŠ” ì»´í¬ë„ŒíŠ¸ 
+	// OtherActor ì¶©ëŒí•œ ìƒëŒ€ actor => Item
+	// OtherComp ì¶©ëŒí•œ ìƒëŒ€ ì»´í¬ë„ŒíŠ¸
 
-	// int32 OtherBodyIndex, Áö±Ý ÄÁÅÙÃ÷ÀûÀ¸·Î º°·Î Áß¿äÇÏÁö ¾Ê±â ¶§¹®¿¡ pass
-	// bool bFromSweep, Áö±Ý ÄÁÅÙÃ÷ÀûÀ¸·Î º°·Î Áß¿äÇÏÁö ¾Ê±â ¶§¹®¿¡ pass
+	// int32 OtherBodyIndex, ì§€ê¸ˆ ì»¨í…ì¸ ì ìœ¼ë¡œ ë³„ë¡œ ì¤‘ìš”í•˜ì§€ ì•Šê¸° ë•Œë¬¸ì— pass
+	// bool bFromSweep, ì§€ê¸ˆ ì»¨í…ì¸ ì ìœ¼ë¡œ ë³„ë¡œ ì¤‘ìš”í•˜ì§€ ì•Šê¸° ë•Œë¬¸ì— pass
 
 
-	// FHitResult Àº Ãæµ¹¿¡ ´ëÇÑ ¼¼ºÎ Á¤º¸¸¦ °¡Áö°í ÀÖ´Ù.
+	// FHitResult ì€ ì¶©ëŒì— ëŒ€í•œ ì„¸ë¶€ ì •ë³´ë¥¼ ê°€ì§€ê³  ìžˆë‹¤.
 	SweepResult.Distance;
-	// Ãæµ¹Ã¼Å©¸¦ ÅëÇØ¼­ ÆÄ¾ÇµÈ »ó´ë¿ÍÀÇ °Å¸®
+	// ì¶©ëŒì²´í¬ë¥¼ í†µí•´ì„œ íŒŒì•…ëœ ìƒëŒ€ì™€ì˜ ê±°ë¦¬
 	SweepResult.FaceIndex;
-	// Ãæµ¹ÇÑ ¸éÀÇ ¹øÈ£
+	// ì¶©ëŒí•œ ë©´ì˜ ë²ˆí˜¸
 	SweepResult.GetActor();
-	// Ãæµ¹ÇÑ ¾×ÅÍ
+	// ì¶©ëŒí•œ ì•¡í„°
 
 }
