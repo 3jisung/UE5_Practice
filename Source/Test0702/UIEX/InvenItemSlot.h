@@ -50,7 +50,6 @@ public:
 
 	void SlotDataCheck();
 
-	/*
 	FORCEINLINE UInvenItemData* GetItemDataObject()
 	{
 		return ItemData;
@@ -68,15 +67,14 @@ public:
 		return ItemData->Data == nullptr;
 	}
 
-	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
-	FSlotFunction ItemChangeFunction;
+	//UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	//FSlotFunction ItemChangeFunction;
 
 	UFUNCTION(BlueprintCallable)
 	UInvenItemData* GetItemData()
 	{
 		return ItemData;
 	}
-	*/
 
 private:
 	UInvenItemData* ItemData = nullptr;

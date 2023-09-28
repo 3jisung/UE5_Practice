@@ -63,3 +63,65 @@ void UInvenItemSlot::SlotDataCheck()
 		}
 	}
 }
+
+void UInvenItemSlot::DragSetting(UInvenItemSlot* _OtherDragSlot)
+{
+	ItemIconBack = Cast<UImage>(GetWidgetFromName(TEXT("ItemBack")));
+	ItemIconImage = Cast<UImage>(GetWidgetFromName(TEXT("ItemIcon")));
+	ItemCountBlock = Cast<UTextBlock>(GetWidgetFromName(TEXT("ItemCount")));
+
+
+	// 이걸호출되는 당사자는
+	// 드래그를 위해서 만들어진 아이콘입니다.
+	ItemBackVisibility = ESlateVisibility::Hidden;
+
+	// _OtherDragSlot은 드래그의 시작이된 슬롯이다.
+	SetItemData(_OtherDragSlot->ItemData);
+}
+
+void UInvenItemSlot::MoveSetting(UInvenItemSlot* _OtherDragSlot)
+{
+	if (_OtherDragSlot == this)
+	{
+		return;
+	}
+
+	// UInvenItemSlot* _OtherDragSlot 시작슬롯
+
+	// 이걸 호출하는 쪽은 이제 도착 슬롯
+
+	if (ItemTypeValue != ItemType::NONE && _OtherDragSlot->ItemData->Data->Type != ItemTypeValue)
+	{
+		return;
+	}
+
+	const FItemData* SwapItemData = _OtherDragSlot->ItemData->Data;
+	_OtherDragSlot->ItemData->Data = ItemData->Data;
+	ItemData->Data = SwapItemData;
+
+	//UInvenItemData* SwapItemData = _OtherDragSlot->ItemData;
+	//_OtherDragSlot->ItemData = ItemData;
+	//ItemData = SwapItemData;
+
+	// 첫번째 함수포인터.
+	// 두번째 다형성
+	// StatusChracter
+
+	// 여기 이부분에서 뭔가를 하고 싶어.
+	// 그건 내가 알려줘야 하는데.
+	// 함수포인터.
+	// 나는 그냥 UI다. 나는 플레이어나 몬스터나 이런것들을 알고 싶지 않다.
+
+	/*
+	// 함수가 매핑 되었다면
+	if (true == ItemChangeFunction.IsBound())
+	{
+		// 그 함수를 호출해라.
+		ItemChangeFunction.Broadcast();
+	}
+	*/
+
+	// 나는 다 받아서 세팅하고
+	SlotDataCheck();
+	_OtherDragSlot->SlotDataCheck();
+}
