@@ -10,6 +10,8 @@
 #include "Components/TextBlock.h"
 #include "InvenItemSlot.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSlotFunction);
+
 /**
  * 
  */
@@ -67,8 +69,8 @@ public:
 		return ItemData->Data == nullptr;
 	}
 
-	//UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
-	//FSlotFunction ItemChangeFunction;
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere, BlueprintCallable)
+	FSlotFunction ItemChangeFunction;
 
 	UFUNCTION(BlueprintCallable)
 	UInvenItemData* GetItemData()

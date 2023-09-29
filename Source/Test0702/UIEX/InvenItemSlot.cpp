@@ -112,14 +112,17 @@ void UInvenItemSlot::MoveSetting(UInvenItemSlot* _OtherDragSlot)
 	// 함수포인터.
 	// 나는 그냥 UI다. 나는 플레이어나 몬스터나 이런것들을 알고 싶지 않다.
 
-	/*
 	// 함수가 매핑 되었다면
 	if (true == ItemChangeFunction.IsBound())
 	{
 		// 그 함수를 호출해라.
 		ItemChangeFunction.Broadcast();
 	}
-	*/
+	// 반대 방향으로 드래그를 하는 경우에도 델리게이트를 체크
+	else if (true == _OtherDragSlot->ItemChangeFunction.IsBound())
+	{
+		_OtherDragSlot->ItemChangeFunction.Broadcast();
+	}
 
 	// 나는 다 받아서 세팅하고
 	SlotDataCheck();

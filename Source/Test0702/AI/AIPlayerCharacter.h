@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Global/GlobalCharacter.h"
 #include "AIEnum.h"
+#include "../UIEX/InvenItemData.h"
 #include "AIPlayerCharacter.generated.h"
 
 /**
@@ -30,8 +31,8 @@ public:
 
 	void InventoryOnOff();
 
-	//UFUNCTION(BlueprintCallable)
-	//void AttUp(class UInvenItemData* _Data);
+	UFUNCTION(BlueprintCallable)
+	void AttUp(class UInvenItemData* _Data);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* WeaponMesh;
@@ -39,6 +40,9 @@ public:
 	// 블루프린트
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UStaticMesh*> WeaponArrays;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int FinalAtt = 10;
 
 protected:
 	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -64,10 +68,7 @@ private:
 	UFUNCTION()
 	void AnimNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-	//UFUNCTION()
-	//void AnimNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
 	float Speed = 1000.0f;
 
-	int Att = 10;
+	const int BasicAtt = 10;
 };

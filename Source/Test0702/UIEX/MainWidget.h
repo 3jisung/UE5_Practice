@@ -26,7 +26,13 @@ public:
 	}
 
 	UFUNCTION(BlueprintCallable)
-	bool CheckWidGetUpdate();
+	void SetOptionOnOffSwitch()
+	{
+		OptionOnOff = OptionOnOff == ESlateVisibility::Hidden ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckWidgetUpdate();
 	
 
 protected:
@@ -44,8 +50,11 @@ private:
 	UPROPERTY(Category = "UIOnOff", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	ESlateVisibility InventoryOnOff = ESlateVisibility::Hidden;
 
+	UPROPERTY(Category = "UIOnOff", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	ESlateVisibility OptionOnOff = ESlateVisibility::Hidden;
+
 	UPROPERTY()
-	TArray<UUserWidget*> AllWidGet;
+	TArray<UUserWidget*> AllWidget;
 
 	UPROPERTY(Category = "Effect", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	bool AllHidden = true;

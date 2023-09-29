@@ -237,6 +237,22 @@ void AAIPlayerCharacter::InventoryOnOff()
 	*/
 }
 
+void AAIPlayerCharacter::AttUp(class UInvenItemData* _Data)
+{
+	if (nullptr == _Data)
+	{
+		return;
+	}
+	// 무기를 장착 해제했을 경우
+	else if (nullptr == _Data->Data)
+	{
+		FinalAtt = BasicAtt;
+		return;
+	}
+
+	FinalAtt = BasicAtt + _Data->Data->Att;
+}
+
 void AAIPlayerCharacter::MontageEnd(UAnimMontage* Anim, bool _Inter)
 {
 	TSubclassOf<UAnimInstance> Inst = AAIPlayerCharacter::StaticClass();

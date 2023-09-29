@@ -10,8 +10,8 @@ void UMainWidget::NativeConstruct()
 	// Inven = Cast<UInventoryUserWidget>(GetWidgetFromName(TEXT("WBP_Inventory")));
 	// Inven = Cast<UInventoryUserWidget>(GetWidgetFromName(TEXT("WBP_Status")));
 
-	AllWidGet.Add(Cast<UUserWidget>(GetWidgetFromName(TEXT("WBP_Inventory"))));
-	AllWidGet.Add(Cast<UUserWidget>(GetWidgetFromName(TEXT("WBP_Status"))));
+	AllWidget.Add(Cast<UUserWidget>(GetWidgetFromName(TEXT("WBP_Inventory"))));
+	AllWidget.Add(Cast<UUserWidget>(GetWidgetFromName(TEXT("WBP_Status"))));
 }
 
 void UMainWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -24,13 +24,13 @@ void UMainWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 }
 
 // 여기서 리턴하는 bool 값은 지금 위젯의 상태가 바뀌었는지를 체크하는 bool 값이 된다.
-bool UMainWidget::CheckWidGetUpdate()
+bool UMainWidget::CheckWidgetUpdate()
 {
 	bool AllHiddenCheck = true;
 
-	for (size_t i = 0; i < AllWidGet.Num(); i++)
+	for (size_t i = 0; i < AllWidget.Num(); i++)
 	{
-		if (AllWidGet[i]->GetVisibility() == ESlateVisibility::Visible)
+		if (AllWidget[i]->GetVisibility() == ESlateVisibility::Visible)
 		{
 			AllHiddenCheck = false;
 		}
