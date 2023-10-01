@@ -28,5 +28,11 @@ struct TEST0702_API FMonsterData : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	TMap<AIState, class UAnimMontage*> MapAnimation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float SearchRange = 1500.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	float AttackRange = 200.0f;
 };
 

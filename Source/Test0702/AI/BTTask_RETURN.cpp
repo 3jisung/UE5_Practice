@@ -7,10 +7,18 @@ EBTNodeResult::Type UBTTask_RETURN::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 {
 	GetGlobalCharacter(OwnerComp)->SetAniState(AIState::RETURN);
 
+	// 돌아가야할 위치는
+
+	FVector OriginPos = GetBlackboardComponent(OwnerComp)->GetValueAsVector(TEXT("OriginPos"));
+
+	UNavigationPath* PathPoint = PathFindNavPath(OwnerComp, OriginPos);
+	GetBlackboardComponent(OwnerComp)->SetValueAsObject(TEXT("NavPath"), PathPoint);
+	GetBlackboardComponent(OwnerComp)->SetValueAsInt(TEXT("CurrentIndex"), 1);
+
 	return EBTNodeResult::Type::InProgress;
 }
 
-void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DelataSeconds)
+void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	if (true == IsDeathCheck(OwnerComp))
 	{
@@ -18,14 +26,33 @@ void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 
+	UObject* NavObject = GetBlackboardComponent(OwnerComp)->GetValueAsObject(TEXT("NavPath"));
+	UNavigationPath* NavPath = Cast<UNavigationPath>(NavObject);
 
-	FVector OriginPos = GetBlackboardComponent(OwnerComp)->GetValueAsVector(TEXT("OriginPos"));
+	if (nullptr == NavPath)
+	{
+		SetStateChange(OwnerComp, AIState::DEATH);
+		return;
+	}
+
+	if (nullptr != NavPath && 1 >= NavPath->PathPoints.Num())
+	{
+		SetStateChange(OwnerComp, AIState::DEATH);
+		return;
+	}
+
+	int CurrentIndex = GetBlackboardComponent(OwnerComp)->GetValueAsInt(TEXT("CurrentIndex"));
+
+	// 문제가 될수 있다.
+	// 1번 찾은 경로를 완전히 끝까지 돌아가는것이 중요해졌다.
+	FVector TargetPos = NavPath->PathPoints[CurrentIndex];
+	FVector ThisPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
+
+	TargetPos.Z = 0.0f;
+	ThisPos.Z = 0.0f;
 
 	{
-		FVector TargetPos = OriginPos;
-		FVector ThisPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
-		TargetPos.Z = 0.0f;
-		ThisPos.Z = 0.0f;
+		// 혹시라도 z축이 있을 가능성을 없애는게 보통입니다.
 
 		FVector Dir = TargetPos - ThisPos;
 		Dir.Normalize();
@@ -40,7 +67,7 @@ void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 		if (FMath::Abs(Angle0 - Angle1) >= 10.0f)
 		{
-			FRotator Rot = FRotator::MakeFromEuler({ 0, 0, Cross.Z * 500.0f * DelataSeconds });
+			FRotator Rot = FRotator::MakeFromEuler({ 0, 0, Cross.Z * 500.0f * DeltaSeconds });
 			GetGlobalCharacter(OwnerComp)->AddActorWorldRotation(Rot);
 		}
 		else {
@@ -50,18 +77,25 @@ void UBTTask_RETURN::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	}
 
 	{
-		FVector PawnPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
-		FVector TargetPos = OriginPos;
-		PawnPos.Z = 0.0f;
+		ThisPos.Z = 0.0f;
 		TargetPos.Z = 0.0f;
 
-		FVector Dir = TargetPos - PawnPos;
+		FVector Dir = TargetPos - ThisPos;
 
 		GetGlobalCharacter(OwnerComp)->AddMovementInput(Dir);
 
 		if (10.0f >= Dir.Size())
 		{
-			SetStateChange(OwnerComp, AIState::IDLE);
+			++CurrentIndex;
+
+			if (NavPath->PathPoints.Num() <= CurrentIndex)
+			{
+				// 최종목적지까지 도달했다.
+				SetStateChange(OwnerComp, AIState::IDLE);
+				return;
+			}
+
+			GetBlackboardComponent(OwnerComp)->SetValueAsInt(TEXT("CurrentIndex"), CurrentIndex);
 			return;
 		}
 	}

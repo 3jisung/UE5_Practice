@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -16,6 +16,9 @@ class TEST0702_API UARGlobal : public UBlueprintFunctionLibrary
 
 public:
 	static FRandomStream MainRandom;
+
+	UFUNCTION(BlueprintCallable, Category = "ARGlobal")
+	static UWorld* GetCurrentWorld();
 
 	UFUNCTION(BlueprintCallable, Category = "ARGlobal")
 	static void ARDebugTextInit();

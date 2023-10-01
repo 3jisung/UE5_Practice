@@ -10,7 +10,7 @@
 
 AMonster::AMonster()
 {
-	//PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 
 	MiniMap = CreateDefaultSubobject<UMiniMapComponent>(TEXT("MiniMapComponent"));
 	MiniMap->SetupAttachment(RootComponent);
@@ -41,11 +41,6 @@ void AMonster::BeginPlay()
 	GetBlackboardComponent()->SetValueAsFloat(TEXT("AttackRange"), 200.0f);
 	FVector Pos = GetActorLocation();
 	GetBlackboardComponent()->SetValueAsVector(TEXT("OriginPos"), Pos);
-}
-
-void AMonster::Tick(float DeltaTime)
-{
-	//UARGlobal::ARDebugTextPrint(this, FString::FromInt(GetAniState()));
 }
 
 void AMonster::Destroyed()

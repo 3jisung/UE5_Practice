@@ -22,7 +22,7 @@ public:
 	const struct FMonsterData* CurMonsterData;
 
 	void BeginPlay() override;
-	void Tick(float DeltaTime) override;
+	//void Tick(float DeltaTime) override;
 
 	void Destroyed() override;
 

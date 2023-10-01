@@ -10,18 +10,63 @@
 class UGlobalDebugUserWidget* UARGlobal::DebugWidget = nullptr;
 FRandomStream UARGlobal::MainRandom;
 
+UWorld* UARGlobal::GetCurrentWorld()
+{
+	// ì–¸ë¦¬ì–¼ ì—”ì§„ ê·¸ìì²´ì— ëŒ€í•œ ê¸°ëŠ¥ì„ ì œê³µí•˜ëŠ” í¬ì¸í„°
+	// GEngine->GetWorld();
+
+	// ì›”ë“œê°€ ë™ì‹œì— ì—¬ëŸ¬ê°œê°€ ì¡´ì¬í• ë•Œê°€ ìˆë‹¤.
+
+	for (const FWorldContext& Context : GEngine->GetWorldContexts())
+	{
+		EWorldType::Type GetWorldType = Context.WorldType;
+
+		if (nullptr == Context.World())
+		{
+			continue;
+		}
+
+		FString Name = Context.World()->GetName();
+
+		// UE_LOG(LogTemp, Error, TEXT("%s"), *Name);
+
+		switch (GetWorldType)
+		{
+		case EWorldType::None:
+			break;
+		case EWorldType::Game:
+			break;
+		case EWorldType::Editor:
+			break;
+		case EWorldType::PIE:
+			return Context.World();
+		case EWorldType::EditorPreview:
+			break;
+		case EWorldType::GamePreview:
+			break;
+		case EWorldType::GameRPC:
+		case EWorldType::Inactive:
+			break;
+		default:
+			break;
+		}
+	}
+
+	return nullptr;
+}
+
 void UARGlobal::ARDebugTextInit()
 {
-	// ³¡³¯À»¶§ ÀÚµ¿À¸·Î Áö¿öÁöÁö¸¸
-	// delete¸¦ ÇÑ´Ù°í 
+	// ëë‚ ì„ë•Œ ìë™ìœ¼ë¡œ ì§€ì›Œì§€ì§€ë§Œ
+	// deleteë¥¼ í•œë‹¤ê³  
 	DebugWidget = nullptr;
 }
 
 void UARGlobal::ARDebugTextPrint(class AActor* _AActor, const FString& _Text)
 {
-	// ¿©±â¼­ ¸¸¾à À§Á¬ÀÌ ¾ø´Ù¸é
-	// ¸¸µé¾î ³»¾ß ÇÑ´Ù.
-	// À§Á¬ÀÌ ¾ø¾î.
+	// ì—¬ê¸°ì„œ ë§Œì•½ ìœ„ì ¯ì´ ì—†ë‹¤ë©´
+	// ë§Œë“¤ì–´ ë‚´ì•¼ í•œë‹¤.
+	// ìœ„ì ¯ì´ ì—†ì–´.
 	if (nullptr == DebugWidget)
 	{
 		UWorld* World = _AActor->GetWorld();
@@ -33,7 +78,7 @@ void UARGlobal::ARDebugTextPrint(class AActor* _AActor, const FString& _Text)
 
 		// 
 
-		// ÀÌ°É ·±Å¸ÀÓ Áß°£¿¡ ¾Ë¾Æ³»´Â ¹æ¹ıÀº
+		// ì´ê±¸ ëŸ°íƒ€ì„ ì¤‘ê°„ì— ì•Œì•„ë‚´ëŠ” ë°©ë²•ì€
 
 		FSoftClassPath ObjectClass("/Script/UMGEditor.WidgetBlueprint'/Game/BluePrint/Global/WBP_GlobalDebugUserWidget.WBP_GlobalDebugUserWidget_C'");
 		
@@ -48,7 +93,7 @@ void UARGlobal::ARDebugTextPrint(class AActor* _AActor, const FString& _Text)
 
 		if (nullptr == NewWidGet)
 		{
-			// »ı¼º¿¡ ½ÇÆĞÇÒ¶§±î ÀÖÀ»¼ö ÀÖÀ¸¹Ç·Î ÀÌ°Íµµ Ã³¸®ÇØÁØ´Ù.
+			// ìƒì„±ì— ì‹¤íŒ¨í• ë•Œê¹Œ ìˆì„ìˆ˜ ìˆìœ¼ë¯€ë¡œ ì´ê²ƒë„ ì²˜ë¦¬í•´ì¤€ë‹¤.
 			return;
 		}
 

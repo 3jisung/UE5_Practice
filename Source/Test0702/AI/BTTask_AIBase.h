@@ -8,6 +8,8 @@
 #include "../Global/GlobalCharacter.h"
 #include "../Global/GlobalEnums.h"
 #include "AICon.h"
+#include "NavigationSystem.h"
+#include "NavigationPath.h"
 #include "BTTask_AIBase.generated.h"
 
 /**
@@ -21,7 +23,7 @@ class TEST0702_API UBTTask_AIBase : public UBTTask_BlackboardBase
 public:
 	UBTTask_AIBase();
 	void OnGameplayTaskActivated(class UGameplayTask&) override;
-	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DelataSeconds) override;
+	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 
 	class AGlobalCharacter* GetGlobalCharacter(UBehaviorTreeComponent& OwnerComp);
@@ -43,4 +45,12 @@ public:
 	void SetStateChange(UBehaviorTreeComponent& OwnerComp, uint8 _State);
 
 	bool IsDeathCheck(UBehaviorTreeComponent& OwnerComp);
+
+	TArray<FVector> PathFind(UBehaviorTreeComponent& OwnerComp, AActor* _Actor);
+
+	TArray<FVector> PathFind(UBehaviorTreeComponent& OwnerComp, FVector _Pos);
+
+	UNavigationPath* PathFindNavPath(UBehaviorTreeComponent& OwnerComp, AActor* _Actor);
+
+	UNavigationPath* PathFindNavPath(UBehaviorTreeComponent& OwnerComp, FVector _Pos);
 };

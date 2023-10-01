@@ -15,7 +15,7 @@ EBTNodeResult::Type UBTTask_IDLE::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 	return EBTNodeResult::Type::InProgress;
 }
 
-void UBTTask_IDLE::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DelataSeconds)
+void UBTTask_IDLE::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	if (true == IsDeathCheck(OwnerComp))
 	{
@@ -23,7 +23,7 @@ void UBTTask_IDLE::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		return;
 	}
 
-	Super::TickTask(OwnerComp, NodeMemory, DelataSeconds);
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 	if (2.0f <= GetStateTime(OwnerComp))
 	{

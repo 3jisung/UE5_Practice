@@ -17,20 +17,14 @@ EBTNodeResult::Type UBTTask_PATROL::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		MoveCom->MaxWalkSpeed = 200.0f;
 	}
 
-
 	int PatrolCount = UARGlobal::MainRandom.RandRange(4, 8);
 
 	UPatrolPositions* PP = NewObject<UPatrolPositions>();
 	GetBlackboardComponent(OwnerComp)->SetValueAsObject(TEXT("PatrolPositions"), PP);
 
-
 	PP->CurrentIndex = 0;
-	// TArray<FVector> Positions;
 
 	FVector OriginPos = GetBlackboardComponent(OwnerComp)->GetValueAsVector(TEXT("OriginPos"));
-
-	// FVector OriginPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
-
 	float SearchRange = GetBlackboardComponent(OwnerComp)->GetValueAsFloat(TEXT("SearchRange"));
 
 	for (size_t i = 0; i < PatrolCount; i++)
@@ -46,15 +40,19 @@ EBTNodeResult::Type UBTTask_PATROL::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	PP->Positions.Add(OriginPos);
 
+	UNavigationPath* PathPoint = PathFindNavPath(OwnerComp, PP->Positions[0]);
+	GetBlackboardComponent(OwnerComp)->SetValueAsObject(TEXT("NavPath"), PathPoint);
+	GetBlackboardComponent(OwnerComp)->SetValueAsInt(TEXT("CurrentIndex"), 1);
+
 	// 최초에 포지션을 여러개 만들어서 넣었다.
 	// 여기에 넣었으므로 블랙보드 컴포넌트가 이 메모리를 지켜줄것이다를 생각하고 있다.
 
 	return EBTNodeResult::Type::InProgress;
 }
 
-void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DelataSeconds)
+void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	Super::TickTask(OwnerComp, NodeMemory, DelataSeconds);
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 	if (true == IsDeathCheck(OwnerComp))
 	{
@@ -70,23 +68,44 @@ void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 
+	// 패트롤 최종지점에 도달했다면
 	UPatrolPositions* PP = Cast<UPatrolPositions>(PPObject);
-
 	TArray<FVector>& Positions = PP->Positions;
-	int CurrentIndex = PP->CurrentIndex;
-
-	if (CurrentIndex == Positions.Num())
+	int PatrolCurrentIndex = PP->CurrentIndex;
+	if (PatrolCurrentIndex == Positions.Num())
 	{
+		// Idle로 다시 돌아간다.
 		SetStateChange(OwnerComp, AIState::IDLE);
 		return;
 	}
 
-	FVector TargetPos = Positions[CurrentIndex];
+	// 이제 일반적인 이동인데.
+	UObject* NavObject = GetBlackboardComponent(OwnerComp)->GetValueAsObject(TEXT("NavPath"));
+	UNavigationPath* NavPath = Cast<UNavigationPath>(NavObject);
+
+	if (nullptr == NavPath)
+	{
+		// 갈수없는 곳을 찍었으므로
+		// 그냥 다음패트롤 위치로 이동한다.
+		++PP->CurrentIndex;
+		return;
+	}
+
+	if (nullptr != NavPath && true == NavPath->PathPoints.IsEmpty())
+	{
+		// 갈수없는 곳을 찍었으므로
+		// 그냥 다음패트롤 위치로 이동한다.
+		++PP->CurrentIndex;
+		return;
+	}
+
+	int CurrentIndex = GetBlackboardComponent(OwnerComp)->GetValueAsInt(TEXT("CurrentIndex"));
+
+	FVector TargetPos = NavPath->PathPoints[CurrentIndex];
 	FVector ThisPos = GetGlobalCharacter(OwnerComp)->GetActorLocation();
-
-
 	AActor* ResultActor = GetTargetSearch(OwnerComp);
 
+	// 타겟 발견 -> MOVE 상태로 전환
 	if (nullptr != ResultActor)
 	{
 		GetBlackboardComponent(OwnerComp)->SetValueAsObject(TEXT("TargetActor"), ResultActor);
@@ -94,7 +113,7 @@ void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		return;
 	}
 
-
+	// 타겟 없음 -> 순찰 계속 진행
 	{
 		TargetPos.Z = 0.0f;
 		ThisPos.Z = 0.0f;
@@ -112,7 +131,7 @@ void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 		if (FMath::Abs(Angle0 - Angle1) >= 10.0f)
 		{
-			FRotator Rot = FRotator::MakeFromEuler({ 0, 0, Cross.Z * 500.0f * DelataSeconds });
+			FRotator Rot = FRotator::MakeFromEuler({ 0, 0, Cross.Z * 500.0f * DeltaSeconds });
 			GetGlobalCharacter(OwnerComp)->AddActorWorldRotation(Rot);
 		}
 		else {
@@ -121,19 +140,41 @@ void UBTTask_PATROL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		}
 	}
 
-
-
 	{
 		FVector Dir = TargetPos - ThisPos;
 
 		GetGlobalCharacter(OwnerComp)->AddMovementInput(Dir);
 
-		if (10.0f >= Dir.Size())
+		if (50.0f >= Dir.Size())
 		{
-			++PP->CurrentIndex;
+			++CurrentIndex;
+
+			if (NavPath->PathPoints.Num() <= CurrentIndex)
+			{
+				// 첫번째 패트롤 포인트까지 이상없이 이동했다는것.
+				// 최종목적지까지 도달했다.
+				// 그럼 다음 패트롤 포인트까지 변경한다.
+				++PP->CurrentIndex;
+
+				// 마지막 패트롤 포인트인 경우
+				if (PatrolCurrentIndex == Positions.Num())
+				{
+					// Idle로 다시 돌아간다.
+					SetStateChange(OwnerComp, AIState::IDLE);
+					return;
+				}
+
+				// 에러가 날 가능성이 높은데 일단 그냥 진행하자.
+				// 다음 패트롤 포인트로 변경 후 길찾기 오브젝트 최신화 및 CurrentIndex 1로 초기화
+				UNavigationPath* PathPoint = PathFindNavPath(OwnerComp, PP->Positions[PP->CurrentIndex]);
+				GetBlackboardComponent(OwnerComp)->SetValueAsObject(TEXT("NavPath"), PathPoint);
+				GetBlackboardComponent(OwnerComp)->SetValueAsInt(TEXT("CurrentIndex"), 1);
+				return;
+			}
+
+			// 현재 패트롤 포인트의 다음 PathPoint로 이동
+			GetBlackboardComponent(OwnerComp)->SetValueAsInt(TEXT("CurrentIndex"), CurrentIndex);
 			return;
 		}
 	}
-
-
 }
