@@ -8,6 +8,7 @@
 #include "../Global/GlobalGameInstance.h"
 #include "../Global/ProjectTile.h"
 #include "../UIEX/GameHUD.h"
+#include "Components/AudioComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 AAIPlayerCharacter::AAIPlayerCharacter()
@@ -35,11 +36,11 @@ AAIPlayerCharacter::AAIPlayerCharacter()
 void AAIPlayerCharacter::BeginPlay()
 {
 	SetAllAnimation(MapAnimation);
+	SetAllSound(MapSound);
 
 	Super::BeginPlay();
 
 	GetGlobalAnimInstance()->OnMontageBlendingOut.AddDynamic(this, &AAIPlayerCharacter::MontageEnd);
-
 	GetGlobalAnimInstance()->OnPlayMontageNotifyBegin.AddDynamic(this, &AAIPlayerCharacter::AnimNotifyBegin);
 
 	SetAniState(AIAniState::Idle);
@@ -50,6 +51,13 @@ void AAIPlayerCharacter::BeginPlay()
 	WeaponArrays.Add(GetGameInstance<UGlobalGameInstance>()->GetMesh(TEXT("Cube")));
 
 	WeaponMesh->SetStaticMesh(WeaponArrays[0]);
+
+	if (nullptr == AudioComponent)
+	{
+		// 비긴플레이에서 한번만 찾는게 가장 좋다.
+		AudioComponent = Cast<UAudioComponent>(GetComponentByClass(UAudioComponent::StaticClass()));
+		AudioComponent->Stop();
+	}
 }
 
 void AAIPlayerCharacter::Tick(float _Delta)

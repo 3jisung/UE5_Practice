@@ -83,6 +83,26 @@ public:
 		}
 	}
 
+	template<typename EnumType>
+	void SetAllSound(const TMap<EnumType, class USoundBase*>& _MapSound)
+	{
+		for (TPair<EnumType, USoundBase*> Pair : _MapSound)
+		{
+			AllSound.Add(static_cast<int>(Pair.Key), Pair.Value);
+		}
+	}
+
+	template<typename EnumType>
+	class USoundBase* GetSound(EnumType _Index)
+	{
+		if (false == AllSound.Contains(static_cast<int>(_Index)))
+		{
+			return nullptr;
+		}
+
+		return AllSound[static_cast<int>(_Index)];
+	}
+
 	UFUNCTION()
 	void PushComponent(UActorComponent* _Component)
 	{
@@ -111,6 +131,22 @@ protected:
 		AllAnimations.Add(_Index, _Montage);
 	}
 
+	template<typename EnumType>
+	void PushSound(EnumType _Index, class USoundBase* _Montage)
+	{
+		PushSound(static_cast<int>(_Index), _Montage);
+	}
+
+	void PushSound(int _Index, class USoundBase* _Montage)
+	{
+		if (true == AllSound.Contains(_Index))
+		{
+			return;
+		}
+
+		AllSound.Add(_Index, _Montage);
+	}
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -134,6 +170,9 @@ private:
 	TMap<int, class UAnimMontage*> AllAnimations;
 
 	class UGlobalAnimInstance* GlobalAnimInstance = nullptr;
+
+	UPROPERTY(Category = "GlobalChracterValue", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TMap<int, class USoundBase*> AllSound;
 
 	UPROPERTY(Category = "GlobalCharacterValue", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	float HP = 100;

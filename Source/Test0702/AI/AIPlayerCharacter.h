@@ -62,6 +62,12 @@ private:
 	UPROPERTY(Category = "Components", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	TMap<AIAniState, class UAnimMontage*> MapAnimation;
 
+	UPROPERTY()
+	class UAudioComponent* AudioComponent = nullptr;
+
+	UPROPERTY(Category = "Components", EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TMap<AIAniState, class USoundBase*> MapSound;
+
 	UFUNCTION()
 	void MontageEnd(UAnimMontage* Anim, bool _Inter);
 
