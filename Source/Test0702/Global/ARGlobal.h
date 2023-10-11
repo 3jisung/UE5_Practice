@@ -17,6 +17,9 @@ class TEST0702_API UARGlobal : public UBlueprintFunctionLibrary
 public:
 	static FRandomStream MainRandom;
 
+	UFUNCTION(BlueprintCallable, Category = "ARGlobal", meta = (DefaultToSelf = "_Object"))
+	static void MainUIOnOff(ESlateVisibility _Value);
+
 	UFUNCTION(BlueprintCallable, Category = "ARGlobal")
 	static UWorld* GetCurrentWorld();
 

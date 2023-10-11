@@ -6,9 +6,23 @@
 #include "GameFramework/HUD.h"
 #include "Blueprint/UserWidget.h"
 #include "GlobalDebugUserWidget.h"
+#include "../UIEX/GameHUD.h"
 
 class UGlobalDebugUserWidget* UARGlobal::DebugWidget = nullptr;
 FRandomStream UARGlobal::MainRandom;
+
+void UARGlobal::MainUIOnOff(ESlateVisibility _Value)
+{
+	APlayerController* Con = UGameplayStatics::GetPlayerController(GetCurrentWorld(), 0);
+	AGameHUD* HUD = Cast<AGameHUD>(Con->GetHUD());
+
+	if (nullptr == HUD)
+	{
+		return;
+	}
+
+	HUD->GetMainWidget()->SetVisibility(_Value);
+}
 
 UWorld* UARGlobal::GetCurrentWorld()
 {
