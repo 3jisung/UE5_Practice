@@ -24,8 +24,12 @@ public:
 
 	//void WeaponChange();
 
+	UFUNCTION(BlueprintCallable)
 	void MoveRight(float Val);
+
+	UFUNCTION(BlueprintCallable)
 	void MoveForward(float Val);
+
 	void TurnAtRate(float Rate);
 	void LookUpAtRate(float Rate);
 
